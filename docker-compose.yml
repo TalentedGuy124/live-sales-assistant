@@ -1,0 +1,42 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  # Postgres for structured data and shared state
+  postgres:
+    image: postgres:15
+    container_name: sales-assistant-postgres
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: sales_assistant_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Redis for caching and message bus (Redis Streams)
+  redis:
+    image: redis/redis-stack-server:latest
+    container_name: sales-assistant-redis
+    ports:
+      - "6379:6379"
+      - "8001:8001" # RedisInsight UI
+
+  # Weaviate as the Vector Database
+  weaviate:
+    image: semitechnologies/weaviate:1.24.1
+    container_name: sales-assistant-weaviate
+    ports:
+      - "8080:8080"
+    restart: on-failure:0
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      DEFAULT_VECTORIZER_MODULE: 'none'
+      ENABLE_MODULES: ''
+      CLUSTER_HOSTNAME: 'node1'
+
+volumes:
+  postgres_data:

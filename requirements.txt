@@ -1,0 +1,16 @@
+# requirements.txt
+
+# For communicating with Redis message bus
+redis
+
+# For speech-to-text (STT Agent)
+openai-whisper
+
+# For natural language processing (Entity Extraction Agent)
+spacy
+
+# For connecting to our vector database (Retriever Agent)
+weaviate-client>=3.26.7,<4.0.0
+
+# Note: After this installation, run this command separately:
+# python -m spacy download en_core_web_sm
